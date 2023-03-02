@@ -74,6 +74,7 @@ export default {
         const attachment = handleAttachmentId(values.attachment.fileList)
         await uploadInfo({ id: this.childId, attachment })
         this.$nextTick(() => {
+          this.$message.success('修改成功')
           this.isShowUpload = false
           this.getList()
         })

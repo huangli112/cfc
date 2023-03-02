@@ -73,7 +73,7 @@ export async function getTypeInfo (code) {
 
 export async function updateTypeInfo (data) {
   const res = await request.post('type/update', { requestData: { ...data } })
-  return res.data.list
+  return res.data
 }
 
 // 获取内容列表 (企业信息 实训板块列表 软件产品列表 新闻列表)

@@ -107,6 +107,7 @@ export default {
     },
     /* 新增Modal */
     handleAdd () {
+      this.formData = {}
       this.visible = true
       this.title = false
     },

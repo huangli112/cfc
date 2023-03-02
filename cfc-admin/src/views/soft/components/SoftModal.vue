@@ -36,10 +36,11 @@
       </a-form-item>
       <a-form-item label='附件' extra='此处上传产品板块轮播图'>
         <a-upload
-          v-decorator="['attachment',  {valuePropName: 'fileList'},]"
           action='http://114.67.199.59/cfc/file/upload'
           list-type='text'
           :headers='headers'
+          @change="handleFileChange"
+          :file-list="fileList"
         >
           <a-button type='primary'>
             <a-icon type='upload' />
@@ -56,7 +57,7 @@ import ATextarea from 'ant-design-vue/es/input/TextArea'
 import { addSoft, updateSoft } from '@/api/soft.js'
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { handleAttachmentId, handleFileList } from '@/utils/constant'
+import { handleFileList } from '@/utils/constant'
 
 export default {
   components: { ATextarea },
@@ -80,12 +81,15 @@ export default {
         labelCol: { span: 6 },
         wrapperCol: { span: 18 }
       },
+      fileList: [],
+      attachment: [],
       headers: { authorization: `Bearer  ${Vue.ss.get(ACCESS_TOKEN)}` }
     }
   },
   watch: {
     visible () {
       setTimeout(() => {
+        this.fileList = []
         this.getFormData()
       }, 500)
     }
@@ -101,7 +105,9 @@ export default {
         showIndex,
         attachment
       } = this.data
-      const newAttachment = handleFileList(attachment)
+      console.log(attachment, this.data)
+
+      this.fileList = handleFileList(attachment)
 
       this.form.setFieldsValue({
         title,
@@ -109,15 +115,13 @@ export default {
         content,
         contentDescription,
         link,
-        showIndex,
-        attachment: newAttachment
+        showIndex
       })
     },
     onSubmit () {
       this.form.validateFields(async (err, values) => {
         if (err) return
 
-        values.attachment = handleAttachmentId(values.attachment.fileList)
         if (values.contentDescription === ' ') {
           return (values.contentDescription = [])
         } else {
@@ -126,6 +130,7 @@ export default {
         if (!this.title) {
           const assParams = {
             ...values,
+            attachment: this.attachment,
             code: 'SOFTWARE_PRODUCT'
           }
           const res = await addSoft(assParams)
@@ -136,6 +141,7 @@ export default {
         } else {
           const updParams = {
             ...values,
+            attachment: this.attachment,
             id: this.data.id
           }
           const res = await updateSoft(updParams)
@@ -149,6 +155,31 @@ export default {
     closeModal () {
       this.form.resetFields()
       this.$emit('close')
+    },
+    handleFileChange (info) {
+      this.fileList = info.fileList
+      if (info.file.status === 'uploading') {
+        this.loading = true
+      }
+
+      if (info.file.status === 'done' || info.file.status === 'error' || info.file.status === 'success') {
+        this.loading = false
+      }
+
+      // 上传
+      if (info.file.status === 'done' && info.file.response) {
+        console.log(info.fileList)
+        const { data } = info.file.response
+        if (!data.id) {
+          this.$message.error('文件上传失败，请重试！')
+          this.fileList = info.fileList.filter((file) => file.status === 'done' || file.status === 'success')
+        }
+        this.attachment = info.fileList.map(item => item.response.data.id)
+      }
+
+      if (info.file.status === 'removed') {
+        this.attachment = info.fileList.map(item => item.response.data.id)
+      }
     }
   }
 }

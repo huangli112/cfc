@@ -10,11 +10,9 @@
       @change='handleChange'
     >
       <BusinessImage v-if='fileId' :file-id='fileId' alt='avatar' img-style='height: 100px' />
-      <div v-else>
+
+      <div class="upload-icon">
         <a-icon :type="loading ? 'loading' : 'plus'" />
-        <div class='ant-upload-text'>
-          上传
-        </div>
       </div>
     </a-upload>
   </div>
@@ -76,6 +74,16 @@ export default {
 .avatar-uploader > .ant-upload {
   width: 128px;
   height: 128px;
+
+}
+.ant-upload.ant-upload-select-picture-card > .ant-upload {
+  position: relative;
+}
+
+.upload-icon {
+  position: absolute;
+  top: calc(50% - 16px);
+  left: calc(50% - 16px)
 }
 
 .ant-upload-select-picture-card i {

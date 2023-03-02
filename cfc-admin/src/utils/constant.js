@@ -27,7 +27,7 @@ export async function downloadImage (fileId) {
 }
 
 export function handleAttachmentId (fileList) {
-  if (!fileList) {
+  if (!fileList.length) {
     return []
   }
   return fileList.map(item => item.response.data.id)

@@ -129,7 +129,9 @@ export default {
         content: '确定要删除这条数据吗?',
         onOk: async () => {
           await deleteContentInfo(id)
+          this.$message.success('删除成功')
           this.$nextTick(() => {
+            this.$message.success('取消删除')
             this.getInfoList()
           })
         },

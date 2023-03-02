@@ -87,6 +87,10 @@ export default {
         }
         this.attachment = info.fileList.map(item => item.response.data.id)
       }
+
+      if (info.file.status === 'removed') {
+        this.attachment = info.fileList.map(item => item.response.data.id)
+      }
     },
     handleUpload () {
       // 请求放到外层父组件

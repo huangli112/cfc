@@ -10,8 +10,6 @@
           <div style='width: 100%'>
             <BusinessImage :file-id='item.id' style='height: 160px;width: 100%'></BusinessImage>
           </div>
-          <div>
-          </div>
         </a-card>
       </a-list-item>
     </a-list>
@@ -69,6 +67,7 @@ export default {
     async handleCreate (data) {
       const { attachment } = data
       await uploadInfo({ id: 1, attachment })
+      this.$message.success('修改成功')
       this.visible = false
       this.$nextTick(() => {
         this.getList()

@@ -7,6 +7,11 @@ const permission = {
     access: [],
     menus: []
   },
+  getters: {
+    menus (state) {
+      return state.menus
+    }
+  },
 
   mutations: {
     SET_MENUS (state, menus) {

@@ -220,10 +220,12 @@ export default {
         onOk: async () => {
           await deleteCompany(record.id)
           this.$nextTick(() => {
+            this.$message.success('删除成功')
             this.getInfoList()
           })
         },
         onCancel: () => {
+          this.$message.success('取消删除')
           return false
         }
       })

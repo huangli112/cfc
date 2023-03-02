@@ -1,8 +1,7 @@
 <script lang="jsx">
-import Vue from 'vue'
 import { appStoreMixin, deviceMixin } from '@/mixins'
 import { generateOpenKeys } from '@/utils'
-import { MENUS } from '../../store/mutation-types'
+import { mapGetters } from 'vuex'
 
 export default {
   mixins: [appStoreMixin, deviceMixin],
@@ -24,6 +23,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('permission', ['menus']),
     isSide () {
       return (
         this.layoutMode === 'side' ||
@@ -53,7 +53,6 @@ export default {
     },
     handleMenuClick ({ item, key, keyPath }) {
       this.selectedKeys = [keyPath[0]]
-      console.log(key)
       this.$router.push(`/${key}`)
       this.$emit('close')
     },
@@ -93,7 +92,7 @@ export default {
     const menuWrapClass = [
       'lu-menu',
       isSide && 'lu-menu__side',
-      `lu-menu__${ menuTheme }`
+      `lu-menu__${menuTheme}`
     ]
 
     const menuProps = {
@@ -115,19 +114,19 @@ export default {
         return menus.map(menu => {
           if (menu.children && menu.children.length) {
             return (
-              <a-sub-menu key={ menu.path }>
+              <a-sub-menu key={menu.path}>
                 <span slot="title">
-                  { menu.icon && <a-icon type={ menu.icon } /> }
-                  <span>{ menu.title }</span>
+                  {menu.icon && <a-icon type={menu.icon}/>}
+                  <span>{menu.title}</span>
                 </span>
-                { generateMenu(menu.children) }
+                {generateMenu(menu.children)}
               </a-sub-menu>
             )
           } else {
             return (
-              <a-menu-item key={ menu.path }>
-                { menu.icon && <a-icon type={ menu.icon } /> }
-                <span>{ menu.title }</span>
+              <a-menu-item key={menu.path}>
+                {menu.icon && <a-icon type={menu.icon}/>}
+                <span>{menu.title}</span>
               </a-menu-item>
             )
           }
@@ -136,9 +135,9 @@ export default {
     }
 
     return (
-      <div class={ menuWrapClass }>
-        <a-menu props={ menuProps } on={ menuEvent }>
-          { generateMenu(Vue.ss.get(MENUS)) }
+      <div class={menuWrapClass}>
+        <a-menu v-if="menus" props={menuProps} on={menuEvent}>
+          {generateMenu(this.menus)}
         </a-menu>
       </div>
     )
@@ -146,27 +145,27 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .lu-menu {
-    &.lu-menu__side {
-      border-top: 1px solid #3d4348;
+.lu-menu {
+  &.lu-menu__side {
+    border-top: 1px solid #3d4348;
 
-      &.lu-menu__light {
-        border-top-color: rgba(61, 67, 72, 0.1);
-      }
+    &.lu-menu__light {
+      border-top-color: rgba(61, 67, 72, 0.1);
     }
   }
+}
 
-  .ant-menu {
-    background: transparent;
+.ant-menu {
+  background: transparent;
 
-    &.ant-menu-horizontal {
-      height: 65px;
-      line-height: 65px;
-    }
-
-    .ant-menu-inline.ant-menu-sub {
-      background: rgba(37, 37, 37, 1);
-      box-shadow: none;
-    }
+  &.ant-menu-horizontal {
+    height: 65px;
+    line-height: 65px;
   }
+
+  .ant-menu-inline.ant-menu-sub {
+    background: rgba(37, 37, 37, 1);
+    box-shadow: none;
+  }
+}
 </style>
